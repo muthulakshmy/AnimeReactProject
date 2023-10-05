@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import SearchIcon from "@mui/icons-material/Search";
 import { styled, alpha } from "@mui/material/styles";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import ProfileData from "../Profile";
@@ -23,9 +22,9 @@ import { Link } from "react-router-dom";
 const Home = () => {
   const url = "https://api.jikan.moe/v4/anime";
   const [animeData, setAnimeData] = useState([]);
+  const[search,setSearch]=useState([])
   const [searchItem, setSearchItem] = useState("");
   const [loading, setLoading] = useState(false);
-  const[list, setList] = useState('')
   const reducer = (state, action) => {
     switch (action.type) {
       case "ADD":
@@ -84,8 +83,6 @@ const Home = () => {
     dispatch({ type: "REMOVE", payload: anime });
   };
 
-
-
   const Search = styled("div")(({ theme }) => ({
     position: "relative",
     borderRadius: theme.shape.borderRadius,
@@ -126,27 +123,23 @@ const Home = () => {
       },
     },
   }));
-function handleAnimePage(event,value){
-  // setSearchItem(e.target.value)
-  console.log(value,"target")
-  const data=value
-  axios.get(`${url}?q=${data}`)
-  .then((res)=>setAnimeData(res.data.data))
-  .then((err)=>console.error(err))
-
-
-
-}
-const searchAnimeData = animeData.filter((value) =>
-value.title.toLowerCase().includes(searchItem.toLowerCase())
-);
-function handleAnime(e,option){
-  console.log("oiuytre")
-  console.log("id",option.mal_id)
-  const id=option.mal_id
-  console.log("idididiid",id)
-  
-}
+  function handleAnimePage(event, value) {
+    console.log(value, "target");
+    const data = value;
+    axios
+      .get(`${url}?q=${data}`)
+      .then((res) => setSearch(res.data.data))
+      .then((err) => console.error(err));
+  }
+  const searchAnimeData = animeData.filter((value) =>
+    value.title.toLowerCase().includes(searchItem.toLowerCase())
+  );
+  function handleAnime(e, option) {
+    console.log("oiuytre");
+    console.log("id", option.mal_id);
+    const id = option.mal_id;
+    console.log("idididiid", id);
+  }
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -160,37 +153,46 @@ function handleAnime(e,option){
             >
               MY ANIME WEBAPP
             </Typography>
-            
-            <Autocomplete 
-            
-            sx={{width: "300px", backgroundColor:"white",}}
-        freeSolo
-        id="free-solo-2-demo"
-        disableClearable
-        onInputChange={handleAnimePage}
-       
-        options={animeData}
-        getOptionLabel={(option) => option.title}
-        renderOption={(props, option) => (
-          <Link to={`anime/${option.mal_id}` } style={{textDecoration:"none",color:"black"}}
-          ><Box  component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props} value={option.mal_id} onClick={(e)=>handleAnime(e,option)} >
-            
-            <CardMedia image={option.images.jpg.small_image_url} sx={{width:"50px", height:"50px"}}   /> {option.title} ({option.mal_id}) 
-          </Box>
-          </Link>
-        )}
-        renderInput={(params) => (
-          <TextField 
-            {...params}
-            label="Search input"
-            InputProps={{
-              ...params.InputProps,
-              type: 'search',
-            }}
-          />
-        )}
-        
-      />
+
+            <Autocomplete
+              sx={{ width: "300px", backgroundColor: "white" }}
+              freeSolo
+              id="free-solo-2-demo"
+              disableClearable
+              onInputChange={handleAnimePage}
+              options={search}
+              getOptionLabel={(option) => option.title}
+              renderOption={(props, option) => (
+                <Link
+                  to={`anime/${option.mal_id}`}
+                  style={{ textDecoration: "none", color: "black" }}
+                >
+                  <Box
+                    component="li"
+                    sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                    {...props}
+                    value={option.mal_id}
+                    onClick={(e) => handleAnime(e, option)}
+                  >
+                    <CardMedia
+                      image={option.images.jpg.small_image_url}
+                      sx={{ width: "50px", height: "50px" }}
+                    />{" "}
+                    {option.title} ({option.mal_id})
+                  </Box>
+                </Link>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Search input"
+                  InputProps={{
+                    ...params.InputProps,
+                    type: "search",
+                  }}
+                />
+              )}
+            />
           </Toolbar>
         </AppBar>
       </Box>
@@ -210,7 +212,7 @@ function handleAnime(e,option){
             borderRadius: 3,
           }}
         >
-          {searchAnimeData.map((anime, id) => (
+          {animeData.map((anime, id) => (
             <Box
               key={id}
               elevation={8}
@@ -308,7 +310,7 @@ function handleAnime(e,option){
         sx={{ marginTop: "10px" }}
       >
         {loading ? <Typography>Loading...</Typography> : " "}
-        {searchAnimeData.map((anime) => (
+        {animeData.map((anime) => (
           <Card key={anime.mal_id}>
             <Box
               elevation={8}
