@@ -7,9 +7,10 @@ import {
   CardMedia,
   Stack,
   Divider,
-  IconButton,
   Typography,
   InputBase,
+  TextField,
+  Autocomplete,
 } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -18,12 +19,13 @@ import { styled, alpha } from "@mui/material/styles";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import ProfileData from "../Profile";
 import { BookmarkAddOutlined } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 const Home = () => {
   const url = "https://api.jikan.moe/v4/anime";
   const [animeData, setAnimeData] = useState([]);
   const [searchItem, setSearchItem] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const[list, setList] = useState('')
   const reducer = (state, action) => {
     switch (action.type) {
       case "ADD":
@@ -127,7 +129,24 @@ const Home = () => {
       },
     },
   }));
+function handleAnimePage(event,value){
+  // setSearchItem(e.target.value)
+  console.log(value,"target")
+  const data=value
+  axios.get(`${url}?q=${data}`)
+  .then((res)=>res.data.data)
+  // .then((res)=>)
 
+
+
+}
+function handleAnime(e,option){
+  console.log("oiuytre")
+  console.log("id",option.mal_id)
+  const id=option.mal_id
+  console.log("idididiid",id)
+  
+}
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -141,17 +160,37 @@ const Home = () => {
             >
               MY ANIME WEBAPP
             </Typography>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ "aria-label": "search" }}
-                value={searchItem}
-                onChange={(e) => setSearchItem(e.target.value)}
-              />
-            </Search>
+            
+            <Autocomplete 
+            
+            sx={{width: "300px", backgroundColor:"white",}}
+        freeSolo
+        id="free-solo-2-demo"
+        disableClearable
+        onInputChange={handleAnimePage}
+       
+        options={animeData}
+        getOptionLabel={(option) => option.title}
+        renderOption={(props, option) => (
+          <Link to={`anime/${option.mal_id}` } style={{textDecoration:"none",color:"black"}}
+          ><Box  component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props} value={option.mal_id} onClick={(e)=>handleAnime(e,option)} >
+            
+            <CardMedia image={option.images.jpg.small_image_url} sx={{width:"50px", height:"50px"}}   /> {option.title} ({option.mal_id}) 
+          </Box>
+          </Link>
+        )}
+        renderInput={(params) => (
+          <TextField 
+            {...params}
+            label="Search input"
+            InputProps={{
+              ...params.InputProps,
+              type: 'search',
+            }}
+          />
+        )}
+        
+      />
           </Toolbar>
         </AppBar>
       </Box>
@@ -299,7 +338,7 @@ const Home = () => {
               <Typography>{anime.title_japanese}</Typography>
               <Typography>Episodes : {anime.episodes}</Typography>
               <Typography>Score : {anime.score}</Typography>
-              <Typography>Genre : {anime.genres[0].name}</Typography>
+              {/* <Typography>Genre : {anime.genres[0].name}</Typography> */}
             </Box>
           </Card>
         ))}

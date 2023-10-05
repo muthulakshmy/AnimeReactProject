@@ -8,6 +8,7 @@ import { BrowserRouter as Router,Routes,Route ,Link} from 'react-router-dom';
 import { useAuth } from './auth';
 import { AuthProvider } from './auth';
 import RequireAuth from './RequireAuth';
+import AnimeItem from './Pages/AnimeItem';
 function App() {
   // const auth=useAuth()
   return (
@@ -18,6 +19,8 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/*" element={<Error />} />
+          
+          <Route path="home/anime/:id" element={<RequireAuth><AnimeItem /></RequireAuth>} />
           <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
           
         </Routes>
