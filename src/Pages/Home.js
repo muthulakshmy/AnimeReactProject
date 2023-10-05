@@ -84,9 +84,7 @@ const Home = () => {
     dispatch({ type: "REMOVE", payload: anime });
   };
 
-  const searchAnimeData = animeData.filter((value) =>
-    value.title.toLowerCase().includes(searchItem.toLowerCase())
-  );
+
 
   const Search = styled("div")(({ theme }) => ({
     position: "relative",
@@ -117,7 +115,6 @@ const Home = () => {
     color: "inherit",
     "& .MuiInputBase-input": {
       padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
       paddingLeft: `calc(1em + ${theme.spacing(4)})`,
       transition: theme.transitions.create("width"),
       width: "100%",
@@ -134,12 +131,15 @@ function handleAnimePage(event,value){
   console.log(value,"target")
   const data=value
   axios.get(`${url}?q=${data}`)
-  .then((res)=>res.data.data)
-  // .then((res)=>)
+  .then((res)=>setAnimeData(res.data.data))
+  .then((err)=>console.error(err))
 
 
 
 }
+const searchAnimeData = animeData.filter((value) =>
+value.title.toLowerCase().includes(searchItem.toLowerCase())
+);
 function handleAnime(e,option){
   console.log("oiuytre")
   console.log("id",option.mal_id)
