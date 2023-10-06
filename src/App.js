@@ -20,7 +20,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/*" element={<Error />} />
           
-          <Route path="home/anime/:id" element={<RequireAuth><AnimeItem /></RequireAuth>} />
+          <Route path="home/anime/:id" element={<AnimeItem />} />
           <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
           
         </Routes>

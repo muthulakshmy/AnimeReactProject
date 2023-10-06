@@ -11,13 +11,13 @@ const UsernameInput = (props) => {
     const [value, setValue] = useState("");
     const [error, setError] = useState(false);
     function handleBlur(e){
-        console.log("0oiuytrewtyuiopsder")
-        console.log("MY ERROR",error)
+        // console.log("0oiuytrewtyuiopsder")
+        // console.log("MY ERROR",error)
     const {value} =e.target
     setValue(value)
     const usernameRegex=new RegExp(usernameValidate)
     setError(!usernameRegex.test(value))
-    console.log("MY lokijuytres ERROR",error)
+    // console.log("MY lokijuytres ERROR",error)
     if(props.onBlur){
         props?.onBlur?.(e,!usernameRegex.test(value))
     }

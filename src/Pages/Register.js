@@ -25,14 +25,14 @@ const Register = () => {
 const[username,setUserName] = useState('')
 const[password,setPassword] = useState('')
   const register=useAuth()
-//  console.log("ertyui",register)
+//  // console.log("ertyui",register)
  
 function handleUsername(e){
-  console.log("my name is changing 🛑",e.target.value)
+  // console.log("my name is changing 🛑",e.target.value)
   setUserName(e.target.value)
 }
 function handlePassword(e){
-  console.log("my password is changing 😁",e.target.value)
+  // console.log("my password is changing 😁",e.target.value)
   setPassword(e.target.value)
 
 
@@ -42,14 +42,14 @@ function handlePassword(e){
     e.preventDefault();
     
       const data = JSON.parse(localStorage.getItem("userData") ||"[]" );
-      console.log(username,password,"regereg")
+      // console.log(username,password,"regereg")
       const userData = {
       
         name: username,
         password:password,
         
       };
-       console.log(userData,"console.log for userdata")
+       // console.log(userData,"// console.log for userdata")
       data.push(userData);
       setOpen(true);
       setTimeout(() => {
@@ -57,7 +57,7 @@ function handlePassword(e){
       }, 1500);
 
       localStorage.setItem("userData", JSON.stringify(data));
-      console.log(data);
+      // console.log(data);
  
   }
   const handleClose = (event, reason) => {

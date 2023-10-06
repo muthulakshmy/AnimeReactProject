@@ -19,13 +19,13 @@ const PasswordInput = (props) => {
     event.preventDefault();
   };
   function handleBlur(e){
-    console.log("0oiuytrewtyuiopsder")
-    console.log("MY ERROR",error)
+    // console.log("0oiuytrewtyuiopsder")
+    // console.log("MY ERROR",error)
 const {value} =e.target
 setValue(value)
 const pwdRegex=new RegExp(passwordValidate)
 setError(!pwdRegex.test(value))
-console.log("MY lokijuytres ERROR",error)
+// console.log("MY lokijuytres ERROR",error)
 
 if(props.onBlur){
     props?.onBlur?.(e,!pwdRegex.test(value))

@@ -8,7 +8,7 @@ import {
  
 } from "@mui/material";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../auth";
 import MuiAlert from "@mui/material/Alert";
 import PasswordInput from "./PasswordInput";
@@ -24,7 +24,6 @@ const Login = () => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
-
   const Navigate = useNavigate();
   function handleLogin(e) {
     e.preventDefault();
@@ -40,7 +39,7 @@ const Login = () => {
     const data = JSON.parse(localStorage.getItem("userData") || "[]");
     if (data.length > 0) {
       const loginDetails = data.filter((detail) => {
-        console.log(detail.name, detail.password, "blag,blag");
+        // console.log(detail.name, detail.password, "blag,blag");
         return detail.name === name && detail.password === password;
       });
       if (loginDetails.length > 0) {
