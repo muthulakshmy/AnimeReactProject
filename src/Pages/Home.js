@@ -25,8 +25,6 @@ import { Pagination, PaginationItem } from '@mui/material';
 import Header from "./Components/Header";
 const Home = () => {
   const location = useLocation();
-  const query = new URLSearchParams(location.search);
-  const page = parseInt(query.get('page') || '1', 10);
   
   const url = "https://api.jikan.moe/v4/anime";
   const [animeData, setAnimeData] = useState([]);
@@ -36,6 +34,7 @@ const Home = () => {
   const[handleError,setHandleError] = useState(null)
   const[handleErrorMessage,setHandleErrorMessage] = useState([])
   const[currentPage,setCurrentPage] = useState(1)
+  const[page,setPage]=useState('')
  const navigate =useNavigate()
 
   // // console.log(q,"sssssssssssssssssssssss")
@@ -62,6 +61,7 @@ const Home = () => {
       .then((res) => {
         setAnimeData(res.data.data);
         setLoading(false);
+        setPage(res.data.pagination)
       })
       .catch((err) =>{ console.error("Error")
 // setHandleError(true)
@@ -260,7 +260,7 @@ const Home = () => {
     <Box>
       <Pagination
         page={currentPage}
-        count={1018}
+        count={page.last_visible_page}
         
         renderItem={(item) => (
           <PaginationItem
