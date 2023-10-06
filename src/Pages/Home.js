@@ -20,9 +20,16 @@ import { styled, alpha } from "@mui/material/styles";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import ProfileData from "../Profile";
 import DropDown from "./DropDown";
+import Content from "../Content";
 import { BookmarkAddOutlined } from "@mui/icons-material";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams,useLocation } from "react-router-dom";
+import { Pagination, PaginationItem } from '@mui/material';
+
 const Home = () => {
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const page = parseInt(query.get('page') || '1', 10);
+  
   const url = "https://api.jikan.moe/v4/anime";
   const [animeData, setAnimeData] = useState([]);
   // const [search, setSearch] = useState([]);
@@ -259,6 +266,7 @@ const Home = () => {
                   </Typography>
                 </Box>
               ))}
+            
             </Box>
             <Box
               sx={{
@@ -314,7 +322,23 @@ const Home = () => {
     
 
         
-        
+    <Box>
+                {/* <Content /> */}
+
+
+
+                <Pagination
+        page={page}
+        count={10}
+        renderItem={(item) => (
+          <PaginationItem
+            component={Link}
+            to={`/inbox${item.page === 1 ? '' : `?page=${item.page}`}`}
+            {...item}
+          />
+        )}
+      />
+              </Box> 
         
     </Box>
   );
