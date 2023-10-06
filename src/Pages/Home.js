@@ -2,14 +2,12 @@ import React, { useEffect, useReducer, useState } from "react";
 import axios from "axios";
 import {
   Box,
-  Grid,
-  Card,
+ 
   CardMedia,
   Stack,
   Divider,
   Typography,
-  InputBase,
-  TextField,
+  
   Autocomplete,
   CircularProgress,
   TabScrollButton,
@@ -19,12 +17,12 @@ import Toolbar from "@mui/material/Toolbar";
 import { styled, alpha } from "@mui/material/styles";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import ProfileData from "../Profile";
-import DropDown from "./DropDown";
-import Content from "../Content";
-import { BookmarkAddOutlined } from "@mui/icons-material";
+import DropDown from "./Components/DropDown";
+// import Content from "./Components/Content";
+import { BookmarkAddOutlined, LastPage } from "@mui/icons-material";
 import { Link, useNavigate, useSearchParams,useLocation } from "react-router-dom";
 import { Pagination, PaginationItem } from '@mui/material';
-
+import Header from "./Components/Header";
 const Home = () => {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
@@ -37,6 +35,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const[handleError,setHandleError] = useState(null)
   const[handleErrorMessage,setHandleErrorMessage] = useState([])
+  const[currentPage,setCurrentPage] = useState(1)
  const navigate =useNavigate()
 
   // // console.log(q,"sssssssssssssssssssssss")
@@ -59,7 +58,7 @@ const Home = () => {
   const getData = () => {
     setLoading(true);
     axios
-      .get(`${url}`)
+      .get(`${url}?page=${currentPage}`)
       .then((res) => {
         setAnimeData(res.data.data);
         setLoading(false);
@@ -68,14 +67,12 @@ const Home = () => {
 // setHandleError(true)
       // setHandleErrorMessage(err.message)
     }
-      
-      
       );
   };
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [currentPage]);
 
   const onDragStart = (e, anime) => {
     e.dataTransfer.setData("text/plain", JSON.stringify(anime));
@@ -96,64 +93,18 @@ const Home = () => {
    
     if (!wishlist.find((value) => value.title === item.title)) {
       dispatch({ type: "ADD", payload: item });
-      
     }else{
       dispatch({ type: "REMOVE", payload: item });
-
     }
-   
-
   }
   const removeFromWishlist = (anime) => {
     dispatch({ type: "REMOVE", payload: anime });
   };
-
-  const Search = styled("div")(({ theme }) => ({
-    position: "relative",
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    "&:hover": {
-      backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginLeft: 0,
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(1),
-      width: "auto",
-    },
-  }));
-
-  const SearchIconWrapper = styled("div")(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: "100%",
-    position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  }));
-
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: "inherit",
-    "& .MuiInputBase-input": {
-      padding: theme.spacing(1, 1, 1, 0),
-      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-      transition: theme.transitions.create("width"),
-      width: "100%",
-      [theme.breakpoints.up("sm")]: {
-        width: "12ch",
-        "&:focus": {
-          width: "20ch",
-        },
-      },
-    },
-  }));
-
   const [searchValue, setSearchvalue] = useState("");
  
-  const searchAnimeData = animeData.filter((value) =>
-    value.title.toLowerCase().includes(searchItem.toLowerCase())
-  );
+  // const searchAnimeData = animeData.filter((value) =>
+  //   value.title.toLowerCase().includes(searchItem.toLowerCase())
+  // );
   function handleAnime(e, option) {
     // // console.log("oiuytre");
     // // console.log("id", option.mal_id);
@@ -180,32 +131,16 @@ const Home = () => {
     e.stopPropagation();
     navigate(`anime/${id}`)
   }
+  function handlePagination(e,item){
+    console.log(e,"event in handle pagination")
+    console.log(item,"item in handle pagination")
+    // const page=item.page
+    setCurrentPage(item.page)
+  }
   return (
     <Box>
-     
-    {/* {
-        handleError ? (<Typography>{handleErrorMessage}</Typography> 
- 
-
-
-        ):(   */}
         <Box>
-          <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
-              <Toolbar>
-                <Typography
-                  variant="h6"
-                  noWrap
-                  component="div"
-                  sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
-                >
-                  MY ANIME WEBAPP
-                </Typography>
-   
-                <DropDown />
-              </Toolbar>
-            </AppBar>
-          </Box>
+         <Header />
           <ProfileData />
           {loading ? (<CircularProgress/>) :' '   }
           <Stack
@@ -323,25 +258,25 @@ const Home = () => {
 
         
     <Box>
-                {/* <Content /> */}
-
-
-
-                <Pagination
-        page={page}
-        count={10}
+      <Pagination
+        page={currentPage}
+        count={1018}
+        
         renderItem={(item) => (
           <PaginationItem
-            component={Link}
-            to={`/inbox${item.page === 1 ? '' : `?page=${item.page}`}`}
             {...item}
+            onClick={(e)=>handlePagination(e,item)}
           />
         )}
       />
-              </Box> 
+      </Box> 
         
     </Box>
   );
 };
 
 export default Home;
+
+
+
+

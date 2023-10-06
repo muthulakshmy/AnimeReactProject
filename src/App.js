@@ -10,7 +10,7 @@ import { useAuth } from './auth';
 import { AuthProvider } from './auth';
 import RequireAuth from './RequireAuth';
 import AnimeItem from './Pages/AnimeItem';
-import Content from './Content';
+// import Content from './Content';
 function App() {
   // const auth=useAuth()
   return (
