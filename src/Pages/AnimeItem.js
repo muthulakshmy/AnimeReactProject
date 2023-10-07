@@ -1,4 +1,4 @@
-import { Typography, Box, CardMedia, Stack, Divider } from "@mui/material";
+import { Typography, Box, CardMedia, Stack, Divider, Skeleton } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -7,20 +7,58 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 const AnimeItem = () => {
   const { id } = useParams();
   const [anime, setAnime] = useState([]);
-  const[handleError,setHandleError] = useState([])
+  const[handleError,setHandleError] = useState("")
+ const[loading,setLoading]=useState(true) 
+ 
+
   useEffect(() => {
     axios
       .get(`https://api.jikan.moe/v4/anime/${id}`)
       .then((res) => {
-        setAnime(res.data.data);
-        // // console.log(res.data.data);
+        setAnime(res.data.data)
+        setLoading(false)
+
       })
-      .catch((err) => {console.error("Error",err)
+      .catch((err) => {
+        setHandleError(err.message)
+        console.error("Error",err)
     }
       );
   }, [id]);
   return (
-    <Box sx={{ backgroundColor: "black" ,color:"white", }}>
+
+    <>
+    {
+      handleError ? (<Typography>{handleError}</Typography>):(
+
+<>
+{
+      loading ? (
+      <Box sx={{m:10}}>
+        <Stack
+          direction="row"
+          divider= { <Divider  orientation="vertical" flexItem color="white" />}
+          spacing={10}
+          sx={{color:"white"}}
+          marginTop={2}
+        >
+      <Skeleton
+      variant="rectangular"
+      width={410}
+      height={400}
+      sx={{ m: 2,ml:10 ,mt:10}}
+    />
+    <Skeleton
+      variant="rectangular"
+      width={410}
+      height={400}
+      sx={{ m: 2,ml:10 ,mt:10}}
+    />
+    </Stack>
+    </Box>
+      ):(
+        <>
+        <Box sx={{ backgroundColor: "black" ,color:"white", }}>
       <Box sx={{ backgroundColor: "#ff3399", color: "black" }}>
         <Typography variant="h6" component="h6">
           {anime.title}
@@ -37,8 +75,6 @@ const AnimeItem = () => {
           <Box
             elevation={8}
             sx={{
-              // width: 350,
-              // height: 300,
               m: 5,
               padding: 5,
               borderRadius: 3,
@@ -103,10 +139,7 @@ const AnimeItem = () => {
           }}
         >
           {anime.synopsis && (
-            //   <Typography variant="h6" sx={{ color: "blueviolet" }}>
-            //     Description :{" "}
-            //   </Typography>
-            //   <Typography sx={{color:""}}>{anime.synopsis}{anime.background}</Typography>
+           
             <Box>
               <Typography variant="h6" sx={{ color: "white", }}>
                 Description :{" "}
@@ -130,6 +163,15 @@ const AnimeItem = () => {
         </Box>
       </Box>
     </Box>
+</>
+      )
+    }
+</>
+
+      )
+    }
+    
+   </> 
   );
 };
 

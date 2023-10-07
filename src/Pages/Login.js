@@ -1,21 +1,35 @@
 import React from "react";
-import {
-  TextField,
-  Box,
-  Button,
-  Snackbar,
-  Typography,
- 
-} from "@mui/material";
+import {  Box, Button, Snackbar, Typography } from "@mui/material";
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../auth";
 import MuiAlert from "@mui/material/Alert";
 import PasswordInput from "./PasswordInput";
 import UsernameInput from "./UsernameInput";
+
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
+
+const alertMsg = {
+  error: {
+    msg: "Register First !",
+    severity:"error",
+    key:'error'
+  },
+  empty: {
+    msg: "Please fill the details",
+    severity:"error",
+    key:"empty"
+  },
+  success: {
+    msg: "Logged in successfully!",
+    severity:"success",
+    key:"success"
+  },
+};
+
+
 const Login = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [errors, setErrors] = useState({ pwd: false });
@@ -25,21 +39,26 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const Navigate = useNavigate();
+
+  const [errorType,setErrorType]= useState("");
+
+
   function handleLogin(e) {
     e.preventDefault();
 
     auth.login(name);
     if (name === "") {
       setEmpty(true);
+      setErrorType(alertMsg.empty.key)
     }
     if (password === "") {
       setEmpty(true);
+      setErrorType(alertMsg.empty.key)
     }
 
     const data = JSON.parse(localStorage.getItem("userData") || "[]");
     if (data.length > 0) {
       const loginDetails = data.filter((detail) => {
-        // console.log(detail.name, detail.password, "blag,blag");
         return detail.name === name && detail.password === password;
       });
       if (loginDetails.length > 0) {
@@ -47,8 +66,10 @@ const Login = () => {
         setTimeout(() => {
           Navigate("/home");
         }, 1500);
+        setErrorType(alertMsg.success.key)
       } else {
         setError(true);
+        setErrorType(alertMsg.error.key)
       }
     }
     setName("");
@@ -61,6 +82,7 @@ const Login = () => {
 
     setLoggedIn(false);
     setError(false);
+    setErrorType("")
   };
 
   return (
@@ -68,23 +90,20 @@ const Login = () => {
       <Box
         sx={{
           width: 300,
-          height: 300,
-          mx: 55,
-          my: 5,
+          height: 368,
+          mx: 40,
+          my: 1,
           padding: 10,
           backgroundColor: "aliceblue",
-          "&:hover": {
-            backgroundColor: "lightblue",
-
-            opacity: [0.9, 0.8, 0.7],
-          },
+          
         }}
       >
-        <Typography variant="h4" componnet="h4">
+        <Typography variant="h6" componnet="h6" sx={{fontFamily:"monospace",color:"teal",mb:2}}>
           Login Page
         </Typography>
 
         <UsernameInput
+        sx={{mb:2}}
           value={name}
           onChange={(e) => setName(e.target.value)}
           onBlur={(e, error) => {
@@ -99,31 +118,19 @@ const Login = () => {
             setErrors((state) => ({ ...state, pwd: error }));
           }}
         />
+        <MyAlert
+          open={errorType}
+          onClose={handleClose}
+          msg={alertMsg[errorType]?.msg}
+          severity={alertMsg[errorType]?.severity}
+        />
 
-        <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-            Register First !
-          </Alert>
-        </Snackbar>
-        <Snackbar open={empty} autoHideDuration={6000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-            Register First !
-          </Alert>
-        </Snackbar>
-        <Snackbar open={loggedIn} autoHideDuration={6000} onClose={handleClose}>
-          <Alert
-            onClose={handleClose}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            Logged in successfully
-          </Alert>
-        </Snackbar>
-
-        <Button variant="contained" onClick={handleLogin} disabled={errors.pwd}>
+        <Button variant="contained" onClick={handleLogin}>
           Login
         </Button>
-        <Box>
+        <Box 
+        sx={{mt:2,fontFamily:"monospace" ,color:"teal",fontSize:"15px"}} 
+        >
           New User ? <Link to="/register">Register</Link>
         </Box>
       </Box>
@@ -132,3 +139,13 @@ const Login = () => {
 };
 
 export default Login;
+
+function MyAlert({ msg, onClose, open, severity }) {
+  return (
+    <Snackbar open={open} autoHideDuration={6000} onClose={onClose}>
+      <Alert onClose={onClose} severity={severity} sx={{ width: "100%" }}>
+        {msg}
+      </Alert>
+    </Snackbar>
+  );
+}
