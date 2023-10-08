@@ -10,20 +10,9 @@ const DropDown = () => {
   const [loading, setLoading] = useState(false);
   const [searchUrl, setSearchUrl] = useSearchParams();
   const[changeValue,setChangeValue] = useState('')
-  const q = searchUrl.get("id") || " ";
   function handleAnimePage(event, value) {
-    // // console.log(value, "target");
-    // const data = value;
     setLoading(true);
-    // setSearchvalue(value);
     setChangeValue(value)
-    // if (search.filter((value) => value.title === q)) {
-    //   const s = search.filter((value) => value.title === q);
-    //   setSearchUrl(s);
-    // } else {
-    //   const s = search;
-    //   setSearchUrl(search);
-    // }
   }
 
   useEffect(()=>{
@@ -46,8 +35,17 @@ const DropDown = () => {
 
   },[changeValue])
   return (
-    <div>
-         <Autocomplete
+    <>
+      
+        {
+          loading ? (
+            <Box >
+
+            </Box>
+
+          ):(
+            <>
+             <Autocomplete
                   sx={{ width: "300px", backgroundColor: "white" }}
                   freeSolo
                   id="free-solo-2-demo"
@@ -60,9 +58,7 @@ const DropDown = () => {
                       to={`anime/${option.mal_id}`}
                       style={{ textDecoration: "none", color: "black" }}
                     >
-                      {loading ? (
-                        <CircularProgress />
-                      ) : (
+                      
                         <Box
                           component="li"
                           sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
@@ -75,7 +71,7 @@ const DropDown = () => {
                           />{" "}
                           {option.title} ({option.mal_id})
                         </Box>
-                      )}
+                      
                     </Link>
                   )}
                   renderInput={(params) => (
@@ -89,8 +85,11 @@ const DropDown = () => {
                     />
                   )}
                 />
+              </>
+          )
+        }
       
-    </div>
+    </>
   )
 }
 

@@ -1,5 +1,5 @@
 import React from "react";
-import {  Box, Button, Snackbar, Typography } from "@mui/material";
+import { Box, Button, Snackbar, Typography } from "@mui/material";
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../auth";
@@ -14,21 +14,20 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 const alertMsg = {
   error: {
     msg: "Register First !",
-    severity:"error",
-    key:'error'
+    severity: "error",
+    key: "error",
   },
   empty: {
     msg: "Please fill the details",
-    severity:"error",
-    key:"empty"
+    severity: "error",
+    key: "empty",
   },
   success: {
     msg: "Logged in successfully!",
-    severity:"success",
-    key:"success"
+    severity: "success",
+    key: "success",
   },
 };
-
 
 const Login = () => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -40,8 +39,7 @@ const Login = () => {
   const [error, setError] = useState(false);
   const Navigate = useNavigate();
 
-  const [errorType,setErrorType]= useState("");
-
+  const [errorType, setErrorType] = useState("");
 
   function handleLogin(e) {
     e.preventDefault();
@@ -49,11 +47,11 @@ const Login = () => {
     auth.login(name);
     if (name === "") {
       setEmpty(true);
-      setErrorType(alertMsg.empty.key)
+      setErrorType(alertMsg.empty.key);
     }
     if (password === "") {
       setEmpty(true);
-      setErrorType(alertMsg.empty.key)
+      setErrorType(alertMsg.empty.key);
     }
 
     const data = JSON.parse(localStorage.getItem("userData") || "[]");
@@ -66,10 +64,10 @@ const Login = () => {
         setTimeout(() => {
           Navigate("/home");
         }, 1500);
-        setErrorType(alertMsg.success.key)
+        setErrorType(alertMsg.success.key);
       } else {
         setError(true);
-        setErrorType(alertMsg.error.key)
+        setErrorType(alertMsg.error.key);
       }
     }
     setName("");
@@ -82,7 +80,7 @@ const Login = () => {
 
     setLoggedIn(false);
     setError(false);
-    setErrorType("")
+    setErrorType("");
   };
 
   return (
@@ -95,15 +93,18 @@ const Login = () => {
           my: 1,
           padding: 10,
           backgroundColor: "aliceblue",
-          
         }}
       >
-        <Typography variant="h6" componnet="h6" sx={{fontFamily:"monospace",color:"teal",mb:2}}>
+        <Typography
+          variant="h6"
+          componnet="h6"
+          sx={{ fontFamily: "monospace", color: "teal", mb: 2 }}
+        >
           Login Page
         </Typography>
 
         <UsernameInput
-        sx={{mb:2}}
+          sx={{ mb: 2 }}
           value={name}
           onChange={(e) => setName(e.target.value)}
           onBlur={(e, error) => {
@@ -128,8 +129,13 @@ const Login = () => {
         <Button variant="contained" onClick={handleLogin}>
           Login
         </Button>
-        <Box 
-        sx={{mt:2,fontFamily:"monospace" ,color:"teal",fontSize:"15px"}} 
+        <Box
+          sx={{
+            mt: 2,
+            fontFamily: "monospace",
+            color: "teal",
+            fontSize: "15px",
+          }}
         >
           New User ? <Link to="/register">Register</Link>
         </Box>

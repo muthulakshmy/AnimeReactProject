@@ -1,28 +1,32 @@
 import React, { useEffect, useReducer, useState } from "react";
-import axios from "axios";
-import {
-  Box,
-  CardMedia,
-  Stack,
-  Divider,
-  Typography,
-} from "@mui/material";
-import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
-import ProfileData from "../Profile";
-import { BookmarkAddOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+import { Box, CardMedia, Stack, Divider, Typography } from "@mui/material";
+import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
+import { BookmarkAddOutlined } from "@mui/icons-material";
 import { Pagination, PaginationItem } from "@mui/material";
+
 import SkeletonDesign from "./Components/Skeleton";
 import Header from "./Components/Header";
+import ProfileData from "../Profile";
+import Wishlist from "./Components/Wishlist";
+import PaginationComponent from "./Components/Pagination";
+
 const url = "https://api.jikan.moe/v4/anime";
 
 const Home = () => {
   const [animeData, setAnimeData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [handleError, setHandleError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [page, setPage] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [handleError, setHandleError] = useState("");
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getData();
+  }, [currentPage]);
 
   const reducer = (state, action) => {
     switch (action.type) {
@@ -55,10 +59,6 @@ const Home = () => {
       });
   };
 
-  useEffect(() => {
-    getData();
-  }, [currentPage]);
-
   const onDragStart = (e, anime) => {
     e.dataTransfer.setData("text/plain", JSON.stringify(anime));
   };
@@ -74,6 +74,7 @@ const Home = () => {
       dispatch({ type: "ADD", payload: d });
     }
   };
+
   function handleDdlclick(e, item) {
     if (!wishlist.find((value) => value.title === item.title)) {
       dispatch({ type: "ADD", payload: item });
@@ -81,6 +82,7 @@ const Home = () => {
       dispatch({ type: "REMOVE", payload: item });
     }
   }
+
   const removeFromWishlist = (anime) => {
     dispatch({ type: "REMOVE", payload: anime });
   };
@@ -89,6 +91,7 @@ const Home = () => {
     // e.stopPropagation();
     navigate(`anime/${anime.mal_id}`);
   }
+
   function handlePagination(e, item) {
     setCurrentPage(item.page);
   }
@@ -100,7 +103,7 @@ const Home = () => {
         <Box>
           {loading ? (
             <>
-            <SkeletonDesign />
+              <SkeletonDesign />
             </>
           ) : (
             <Box>
@@ -170,69 +173,20 @@ const Home = () => {
                     ))}
                   </Box>
 
-                  <Box
-                    sx={{
-                      width: 400,
-                      m: 5,
-                      padding: 5,
-                      borderRadius: 3,
-                    }}
-                    droppable
+                  <Wishlist
                     onDragOver={onDragOver}
+                    removeFromWishlist={removeFromWishlist}
                     onDrop={onDrop}
-                  >
-                    <Box
-                      sx={{
-                        backgroundColor: "gray",
-                        color: "white",
-                        padding: "10px",
-                      }}
-                    >
-                      <Typography>Wishlist ❤️</Typography>
-                    </Box>
-                    {wishlist.map((anime, id) => (
-                      <Box
-                        key={id}
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          padding: 2,
-                          border: "1px solid gray",
-                        }}
-                      >
-                        <CardMedia
-                          sx={{
-                            height: "50px",
-                            width: "50px",
-                          }}
-                          component="img"
-                          image={anime.images.jpg.small_image_url}
-                          alt={anime.title}
-                        />
-                        <Typography>{anime.title}</Typography>
-                        <Typography
-                          onClick={() => removeFromWishlist(anime)}
-                          sx={{ cursor: "pointer" }}
-                        >
-                          X
-                        </Typography>
-                      </Box>
-                    ))}
-                  </Box>
+                    wishlist={wishlist}
+                  />
                 </Stack>
               </Box>
 
               <Box>
-                <Pagination
-                  page={currentPage}
-                  count={page.last_visible_page}
-                  renderItem={(item) => (
-                    <PaginationItem
-                      {...item}
-                      onClick={(e) => handlePagination(e, item)}
-                    />
-                  )}
+                <PaginationComponent
+                  currentPage={currentPage}
+                  lastVisiblePage={page.last_visible_page}
+                  handlePagination={handlePagination}
                 />
               </Box>
             </Box>
